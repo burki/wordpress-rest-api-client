@@ -38,8 +38,16 @@ abstract class AbstractWpEndpoint
     public function get($id = null, ?array $params = null)
     {
         $uri = $this->getEndpoint();
+        $paramsSeparator = '?';
+
+        if (true) {
+            // patch to use rest_route parameter
+            $uri = str_replace('/wp-json', '?rest_route=', $uri);
+            $paramsSeparator = '&';
+        }
+
         $uri .= (is_null($id)?'': '/' . $id);
-        $uri .= (is_null($params)?'': '?' . http_build_query($params));
+        $uri .= (is_null($params)?'': $paramsSeparator . http_build_query($params));
 
         $request = new Request('GET', $uri);
         $response = $this->client->send($request);
